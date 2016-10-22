@@ -11,6 +11,7 @@ var USERS_COLLECTION = "pawsitivity-users";
 
 var app = express();
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 var db;
@@ -88,10 +89,9 @@ app.post("/users", function(req, res) {
  *    DELETE: deletes user by id
  */
 
-app.get("/users/:username", function(req, res) {
-    // db.collection(CONTACTS_COLLECTION).findOne({ username: new ObjectID(req.params.username),
-    //         password: new ObjectID(req.params.password) }, function(err, doc) {
-    db.collection(CONTACTS_COLLECTION).findOne({ username: new ObjectID(req.params.username)}, function(err, doc) {
+app.get("/users/:username/:password", function(req, res) {
+    db.collection(CONTACTS_COLLECTION).findOne({ username: new ObjectID(req.params.username),
+            password: new ObjectID(req.params.password) }, function(err, doc) {
         if (err) {
             handleError(res, err.message, "Failed to get contact");
             // res.status(200).json(doc);
