@@ -7,7 +7,7 @@ var ObjectID = mongodb.ObjectID;
 /**
  * Names of the collection in the database
  */
-var GAMES_COLLECTION = "games";
+var USERS_COLLECTION = "pawsitivity-users";
 
 var app = express();
 app.use(bodyParser.json());
@@ -43,7 +43,7 @@ function handleError(res, reason, message, code) {
 }
 
 app.get("/", function(req, res) {
-    res.send("Welcome to GameOn: Ping, Add, Play's REST API");
+    res.send("Welcome to Pawsitivity API!");
 });
 
 /**  "/games"
@@ -52,7 +52,7 @@ app.get("/", function(req, res) {
  */
 
 app.get("/games", function(req, res) {
-    db.collection(GAMES_COLLECTION).find({}).toArray(function(err, docs) {
+    db.collection(USERS_COLLECTION).find({}).toArray(function(err, docs) {
         if (err) {
             handleError(res, err.message, "Failed to get games.");
         } else {
@@ -75,7 +75,7 @@ app.post("/games", function(req, res) {
             "Must provide a hostName, gameLocation, numOfPlayers, dateOfGame, and timeOfGame.", 400);
     }
 
-    db.collection(GAMES_COLLECTION).insertOne(newGame, function(err, doc) {
+    db.collection(USERS_COLLECTION).insertOne(newGame, function(err, doc) {
         if (err) {
             handleError(res, err.message, "Failed to create new game.");
         } else {
