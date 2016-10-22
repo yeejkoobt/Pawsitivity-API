@@ -93,19 +93,19 @@ app.get("/users/:username/:password", function(req, res) {
     db.collection(CONTACTS_COLLECTION).findOne({ username: new ObjectID(req.params.username),
             password: new ObjectID(req.params.password, {_id: 0}) }, function(err, doc) {
         if (err) {
-            handleError(res, err.message, "Failed to get user");
-            // res.status(200).json(doc);
+            //handleError(res, err.message, "Failed to get user");
+            res.status(200).json(false);
         } else {
-            res.status(200).json(doc);
+            res.status(200).json(true);
         }
     });
 });
 
-app.put("/users/:id", function(req, res) {
+app.put("/users/:username", function(req, res) {
     var updateDoc = req.body;
     delete updateDoc._id;
 
-    db.collection(CONTACTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+    db.collection(CONTACTS_COLLECTION).updateOne({username: new ObjectID(req.params.username)}, updateDoc, function(err, doc) {
         if (err) {
             handleError(res, err.message, "Failed to update contact");
         } else {
@@ -114,8 +114,8 @@ app.put("/users/:id", function(req, res) {
     });
 });
 
-app.delete("/users/:id", function(req, res) {
-    db.collection(CONTACTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
+app.delete("/users/:username", function(req, res) {
+    db.collection(CONTACTS_COLLECTION).deleteOne({username: new ObjectID(req.params.username)}, function(err, result) {
         if (err) {
             handleError(res, err.message, "Failed to delete contact");
         } else {
