@@ -88,14 +88,15 @@ app.post("/users", function(req, res) {
  *    DELETE: deletes user by id
  */
 
-app.get("/users/:username/:password", function(req, res) {
-    db.collection(CONTACTS_COLLECTION).findOne({ username: new ObjectID(req.params.username),
-            password: new ObjectID(req.params.password) }, function(err, doc) {
+app.get("/users/:username", function(req, res) {
+    // db.collection(CONTACTS_COLLECTION).findOne({ username: new ObjectID(req.params.username),
+    //         password: new ObjectID(req.params.password) }, function(err, doc) {
+    db.collection(CONTACTS_COLLECTION).findOne({ username: new ObjectID(req.params.username)}, function(err, doc) {
         if (err) {
-            // handleError(res, err.message, "Failed to get contact");
-            res.status(200).json(false);
+            handleError(res, err.message, "Failed to get contact");
+            // res.status(200).json(doc);
         } else {
-            res.status(200).json(true);
+            res.status(200).json(doc);
         }
     });
 });
