@@ -86,8 +86,8 @@ app.post("/users", function(req, res) {
  *    GET: find user by username and password; if the user exists, then we pass a true value, but if not, then we
  *    pass a false value back to the requester. If the username is unique, go ahead and create a new user in the
  *    database and return true; if it is not, then return false.
- *    PUT: update user by id
- *    DELETE: deletes user by id
+ *    PUT: update user by username
+ *    DELETE: deletes user by username
  */
 
 app.get("/users/:username/:password", function(req, res) {
