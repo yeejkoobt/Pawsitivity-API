@@ -46,38 +46,35 @@ app.get("/", function(req, res) {
     res.send("Welcome to Pawsitivity API!");
 });
 
-/**  "/games"
- *    GET: finds all games
- *    POST: creates a new game
+/**  "/users"
+ *    GET: finds all users
+ *    POST: creates a new user
  */
 
-app.get("/games", function(req, res) {
+app.get("/users", function(req, res) {
     db.collection(USERS_COLLECTION).find({}).toArray(function(err, docs) {
         if (err) {
-            handleError(res, err.message, "Failed to get games.");
+            handleError(res, err.message, "Failed to get users.");
         } else {
             res.status(200).json(docs);
         }
     });
 });
 
-app.post("/games", function(req, res) {
+app.post("/users", function(req, res) {
     var newGame = req.body;
     newGame.createDate = new Date();
 
-    if (!(req.body.hostName ||
-        req.body.gameLocation ||
-        req.body.numOfPlayers ||
-        req.body.dateOfGame ||
-        req.body.timeOfGame)) {
+    if (!(req.body.username ||
+        req.body.password)) {
         handleError(res,
             "Invalid user input",
-            "Must provide a hostName, gameLocation, numOfPlayers, dateOfGame, and timeOfGame.", 400);
+            "Must provide a username and password.", 400);
     }
 
     db.collection(USERS_COLLECTION).insertOne(newGame, function(err, doc) {
         if (err) {
-            handleError(res, err.message, "Failed to create new game.");
+            handleError(res, err.message, "Failed to create new user.");
         } else {
             res.status(201).json(doc.ops[0]);
         }
@@ -124,11 +121,11 @@ app.delete("/contacts/:id", function(req, res) {
 });
 
 
-/**  "/games/delete"
- *    DELETE: deletes all games in the database
+/**  "/users/delete"
+ *    DELETE: deletes all users in the database
  */
 
-app.delete("/games/delete", function(req, res) {
+app.delete("/users/delete", function(req, res) {
     db.collection(CONTACTS_COLLECTION).deleteMany({}, function(err, result) {
         if (err) {
             handleError(res, err.message, "Failed to delete all documents in the database");
