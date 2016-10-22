@@ -81,13 +81,13 @@ app.post("/users", function(req, res) {
     });
 });
 
-/**  "/contacts/:id"
- *    GET: find contact by id
- *    PUT: update contact by id
- *    DELETE: deletes contact by id
+/**  "/users/:id"
+ *    GET: find user by id
+ *    PUT: update user by id
+ *    DELETE: deletes user by id
  */
 
-app.get("/contacts/:id", function(req, res) {
+app.get("/users/:id", function(req, res) {
     db.collection(CONTACTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
         if (err) {
             handleError(res, err.message, "Failed to get contact");
@@ -97,7 +97,7 @@ app.get("/contacts/:id", function(req, res) {
     });
 });
 
-app.put("/contacts/:id", function(req, res) {
+app.put("/users/:id", function(req, res) {
     var updateDoc = req.body;
     delete updateDoc._id;
 
@@ -110,7 +110,7 @@ app.put("/contacts/:id", function(req, res) {
     });
 });
 
-app.delete("/contacts/:id", function(req, res) {
+app.delete("/users/:id", function(req, res) {
     db.collection(CONTACTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
         if (err) {
             handleError(res, err.message, "Failed to delete contact");
