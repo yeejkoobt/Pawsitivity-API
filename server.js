@@ -90,7 +90,7 @@ app.post("/users", function(req, res) {
  */
 
 app.get("/users/:username/:password", function(req, res) {
-    db.collection(CONTACTS_COLLECTION).findOne({ username: new ObjectID(req.params.username),
+    db.collection(USERS_COLLECTION).findOne({ username: new ObjectID(req.params.username),
             password: new ObjectID(req.params.password, {_id: 0}) }, function(err, doc) {
         if (err) {
             //handleError(res, err.message, "Failed to get user");
@@ -105,7 +105,7 @@ app.put("/users/:username", function(req, res) {
     var updateDoc = req.body;
     delete updateDoc._id;
 
-    db.collection(CONTACTS_COLLECTION).updateOne({username: new ObjectID(req.params.username)}, updateDoc, function(err, doc) {
+    db.collection(USERS_COLLECTION).updateOne({username: new ObjectID(req.params.username)}, updateDoc, function(err, doc) {
         if (err) {
             handleError(res, err.message, "Failed to update contact");
         } else {
@@ -115,7 +115,7 @@ app.put("/users/:username", function(req, res) {
 });
 
 app.delete("/users/:username", function(req, res) {
-    db.collection(CONTACTS_COLLECTION).deleteOne({username: new ObjectID(req.params.username)}, function(err, result) {
+    db.collection(USERS_COLLECTION).deleteOne({username: new ObjectID(req.params.username)}, function(err, result) {
         if (err) {
             handleError(res, err.message, "Failed to delete contact");
         } else {
@@ -130,7 +130,7 @@ app.delete("/users/:username", function(req, res) {
  */
 
 app.delete("/users/delete", function(req, res) {
-    db.collection(CONTACTS_COLLECTION).deleteMany({}, function(err, result) {
+    db.collection(USERS_COLLECTION).deleteMany({}, function(err, result) {
         if (err) {
             handleError(res, err.message, "Failed to delete all documents in the database");
         } else {
