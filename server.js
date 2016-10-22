@@ -34,7 +34,7 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
     });
 });
 
-// CONTACTS API ROUTES BELOW
+// PAWSITIVITY-USERS API ROUTES BELOW
 
 // Generic error handler used by all endpoints.
 function handleError(res, reason, message, code) {
@@ -63,8 +63,8 @@ app.get("/users", function(req, res) {
 });
 
 app.post("/users", function(req, res) {
-    var newGame = req.body;
-    newGame.createDate = new Date();
+    var newUser = req.body;
+    newUser.createDate = new Date();
 
     if (!(req.body.username ||
         req.body.password)) {
@@ -73,7 +73,7 @@ app.post("/users", function(req, res) {
             "Must provide a username and password.", 400);
     }
 
-    db.collection(USERS_COLLECTION).insertOne(newGame, function(err, doc) {
+    db.collection(USERS_COLLECTION).insertOne(newUser, function(err, doc) {
         if (err) {
             handleError(res, err.message, "Failed to create new user.");
         } else {
@@ -84,19 +84,43 @@ app.post("/users", function(req, res) {
 
 /**  "/users/:id"
  *    GET: find user by username and password; if the user exists, then we pass a true value, but if not, then we
- *    pass a false value back to the requester
+ *    pass a false value back to the requester. If the username is unique, go ahead and create a new user in the
+ *    database and return true; if it is not, then return false.
  *    PUT: update user by id
  *    DELETE: deletes user by id
  */
 
 app.get("/users/:username/:password", function(req, res) {
-    db.collection(USERS_COLLECTION).findOne({ username: new ObjectID(req.params.username),
-            password: new ObjectID(req.params.password, {_id: 0}) }, function(err, doc) {
+    console.log(req.params.username);
+    console.log(req.params.password);
+    db.collection(USERS_COLLECTION).findOne( {username: req.params.username,
+            password: req.params.password}, {_id: 0}, function(err, doc) {
         if (err) {
-            //handleError(res, err.message, "Failed to get user");
-            res.status(200).json(false);
+            /** Server error happened **/
+            res.status(204).send(false);
         } else {
-            res.status(200).json(true);
+            if(doc != null) {
+                /** The user exists in the database **/
+                res.status(200).send(true);
+            }
+            else {
+                /** Make a new entry in the database with the supplied username and password if available
+                 *  Return a boolean value: true for successful creation and false for error
+                 **/
+                var newUsername = req.params.username;
+                var newPassword = req.params.password;
+                var newUser = JSON.stringify({"username": newUsername, "password": newPassword,
+                    "createDate": new Date()});
+                db.collection(USERS_COLLECTION).insertOne(JSON.parse(newUser), function(err, doc) {
+                    if (err) {
+                        /** The username already exists; return false **/
+                        res.status(500).send(false);
+                    } else {
+                        /** The username is unique; return true and create the new user**/
+                        res.status(201).send(true);
+                    }
+                });
+            }
         }
     });
 });
@@ -105,9 +129,9 @@ app.put("/users/:username", function(req, res) {
     var updateDoc = req.body;
     delete updateDoc._id;
 
-    db.collection(USERS_COLLECTION).updateOne({username: new ObjectID(req.params.username)}, updateDoc, function(err, doc) {
+    db.collection(USERS_COLLECTION).updateOne({username: req.params.username}, updateDoc, function(err, doc) {
         if (err) {
-            handleError(res, err.message, "Failed to update contact");
+            handleError(res, err.message, "Failed to update user");
         } else {
             res.status(204).end();
         }
@@ -115,9 +139,9 @@ app.put("/users/:username", function(req, res) {
 });
 
 app.delete("/users/:username", function(req, res) {
-    db.collection(USERS_COLLECTION).deleteOne({username: new ObjectID(req.params.username)}, function(err, result) {
+    db.collection(USERS_COLLECTION).deleteOne({username: req.params.username}, function(err, result) {
         if (err) {
-            handleError(res, err.message, "Failed to delete contact");
+            handleError(res, err.message, "Failed to delete user");
         } else {
             res.status(204).end();
         }
