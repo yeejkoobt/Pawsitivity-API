@@ -1,0 +1,20 @@
+{
+  "name": "pawsitivity-api",
+  "version": "1.0.0",
+  "description": "NodeJS API that will comminicate with the client Pawsitivity Application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yeejkoobt/Pawsitivity-API.git"
+  },
+  "author": "Yeejkoob",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yeejkoobt/Pawsitivity-API/issues"
+  },
+  "homepage": "https://github.com/yeejkoobt/Pawsitivity-API#readme"
+}
